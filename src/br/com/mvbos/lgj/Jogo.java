@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -158,7 +159,6 @@ public class Jogo extends JFrame {
 
 						if (Jogo.nivel < Nivel.niveis.length) {
 							cenario = new JogoCenario(tela.getWidth(), tela.getHeight());
-
 						} else {
 							cenario = new JogoCenarioDoRusso(tela.getWidth(), tela.getHeight());
 						}

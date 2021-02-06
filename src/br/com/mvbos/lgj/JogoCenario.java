@@ -14,9 +14,8 @@ import br.com.mvbos.lgj.base.Util;
 public class JogoCenario extends CenarioPadrao {
 
 	enum Estado {
-		JOGANDO, GANHOU, PERDEU
+		JOGANDO, GANHOU, PERDEU, RANKING
 	}
-	private String name;
 	private static final int _LARG = 25;
 
 	private static final int RASTRO_INICIAL = 5;
@@ -37,16 +36,18 @@ public class JogoCenario extends CenarioPadrao {
 
 	private Elemento[] rastros;
 
-	private Texto texto = new Texto(new Font("Arial", Font.PLAIN, 25));
+	private Texto texto = new Texto(new Font("Arial", Font.PLAIN, 20));
 
 	private Random rand = new Random();
 
 	// Frutas para finalizar o level
-	private int dificuldade = 1;
+	private int dificuldade = 5;
 
 	private int contadorNivel = 0;
 
 	private int score = 0;
+	//Cria o objeto ranking
+	private Ranking ranking = new Ranking();
 
 	private Estado estado = Estado.JOGANDO;
 
@@ -274,17 +275,27 @@ public class JogoCenario extends CenarioPadrao {
 		}
 
 		serpente.desenha(g);
+		texto.setCor(Color.WHITE);
 		texto.desenha(g, String.valueOf(rastros.length - contadorRastro), largura - 45, altura);
 
-		texto.desenha(g, String.format("Score: %d", score), largura - 160, 20 );
+		texto.desenha(g, String.format("Score: %d", score), largura - 100, 20 );
 
 		if (estado != Estado.JOGANDO) {
 
-			if (estado == Estado.GANHOU)
-				texto.desenha(g, "Ganhou!", 180, 180);
-			else
-				//texto.desenha(g, "Game Over!\n aaaa", 180, 180);
-				name = JOptionPane.showInputDialog("Digite seu nome");
+			if(estado != Estado.RANKING) {
+				//Abre um pop-up perguntando o nome e logo apos cria o obj Player e adiciona ao arrayList do obj ranking
+				ranking.addPlayer(new Player(JOptionPane.showInputDialog("Digite seu nick:"), score));
+				//Faz chama o sort do obj ranking
+				ranking.sortRanking();
+				// Chama o metodo para salvar a lista no arquivo
+				ranking.saveRanking();
+				estado = Estado.RANKING;
+			} else{
+				//Exibe a lista
+				for(int i = 0; i< ranking.getSize()&&i<10; i++){
+					texto.desenha(g, (i+1)+"º "+ ranking.getPlayer(i), largura / 2 - 50, 60+(i*40));
+				}
+			}
 		}
 
 		if (Jogo.pausado)
